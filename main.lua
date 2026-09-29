@@ -1,5 +1,15 @@
 local optiSignal = {}
 local internal = {}
+do	
+	local runservice = game:GetService("RunService")
+	local _hyperstep=Instance.new('BindableEvent')
+	for _,v in {'RenderStepped', 'Heartbeat', 'PreRender', 'PreSimulation'} do
+		runservice[v]:Connect(function(...)
+			_hyperstep:Fire(...)
+		end)
+	end
+	hyperstep = _hyperstep.Event
+end
 
 function optiSignal:Bind(event, func)
 	local equiv = internal[event]
@@ -41,4 +51,4 @@ function optiSignal:Unbind(event)
 	internal[event] = nil
 end
 
-return optiSignal
+return optiSignal, hyperstep
